@@ -7,8 +7,8 @@ const { existingData } = require('../utils/exsistingData');
 let registrationController = async (req, res) => {
     const { email, password, confirmPassword, terms } = req.body;
 
-    if(existingData(res,{email:email})){
-        return res.send("User already exists.")
+    if(await existingData(res,{email:email})){
+        return 
     }
 
     if (!terms) {
