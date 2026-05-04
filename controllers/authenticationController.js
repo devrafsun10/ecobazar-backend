@@ -1,11 +1,11 @@
 const { mailVerification } = require('../utils/email');
 const User = require("../models/userModels")
-const jwt = require('jsonwebtoken');
 const { emptyFeildValidation } = require('../utils/validation');
+const { tokenGenerator } = require('../utils/tokenGenerator');
 
 let registrationController = async (req, res) => {
     const { email, password, confirmPassword, terms } = req.body;
-    emptyFeildValidation(res,email,password,confirmPassword,terms)
+   
 
     let existingUser = await User.findOne({ email: email });
 
@@ -20,6 +20,8 @@ let registrationController = async (req, res) => {
             message: "Please accept the terms and conditions."
         })
     }
+
+     emptyFeildValidation(res,email,password,confirmPassword)
 
  
 
@@ -39,13 +41,10 @@ let registrationController = async (req, res) => {
 
     await user.save();
 
-    let token = jwt.sign(
-        {
+    tokenGenerator({
             id: user._id,
             email: user.email
-        },
-        process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: '1d' })
+        }, process.env.ACCESS_TOKEN_SECRET,"1d")
 
     mailVerification(token,email)
 
