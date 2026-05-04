@@ -1,9 +1,11 @@
 const { mailVerification } = require('../utils/email');
 const User = require("../models/userModels")
 const jwt = require('jsonwebtoken');
+const { emptyFeildValidation } = require('../utils/validation');
 
 let registrationController = async (req, res) => {
     const { email, password, confirmPassword, terms } = req.body;
+    emptyFeildValidation(res,email,password,confirmPassword,terms)
 
     let existingUser = await User.findOne({ email: email });
 
@@ -19,11 +21,7 @@ let registrationController = async (req, res) => {
         })
     }
 
-    if (!email || !password || !confirmPassword) {
-        return res.send({
-            message: "All fields are required."
-        })
-    }
+ 
 
     if (password !== confirmPassword) {
         return res.send({
