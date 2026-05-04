@@ -1,13 +1,14 @@
 const User = require("../models/userModels")
 
 let existingData = async (res, findData) => {
-    const { email } = findData; //extract email
-    let existingUser = await User.findOne({ email: email });
+    let existingUser = await User.findOne(findData);
 
     if (existingUser) {
         res.send({ message: "User already exist." })
         return true
     }
+
+    return
 }
 
 module.exports = { existingData }
