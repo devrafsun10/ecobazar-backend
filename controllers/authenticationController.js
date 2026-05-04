@@ -2,17 +2,13 @@ const { mailVerification } = require('../utils/email');
 const User = require("../models/userModels")
 const { emptyFeildValidation } = require('../utils/validation');
 const { tokenGenerator } = require('../utils/tokenGenerator');
+const { existingData } = require('../utils/exsistingData');
 
 let registrationController = async (req, res) => {
     const { email, password, confirmPassword, terms } = req.body;
-   
 
-    let existingUser = await User.findOne({ email: email });
-
-    if (existingUser) {
-        return res.send({
-            message: "User already exists."
-        })
+    if(existingData(res,{email:email})){
+        return res.send("User already exists.")
     }
 
     if (!terms) {
