@@ -37,7 +37,7 @@ let registrationController = async (req, res) => {
 
     await user.save();
 
-    tokenGenerator({
+   let token = tokenGenerator({
             id: user._id,
             email: user.email
         }, process.env.ACCESS_TOKEN_SECRET,"1d")

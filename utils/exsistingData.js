@@ -8,7 +8,7 @@ let existingData = async (res, findData) => {
         return true
     }
 
-    return
+    return false
 }
 
 module.exports = { existingData }
