@@ -4,7 +4,7 @@ require('dotenv').config()
 const express = require('express');
 const cors = require('cors');
 const dbConfig = require('./config/dbConfig');
-const { registrationController } = require("./controllers/authenticationController");
+const { registrationController, loginController } = require("./controllers/authenticationController");
 const User = require('./models/userModels');
 const app = express();
 
@@ -17,6 +17,7 @@ app.use(cors());
 dbConfig();
 
 app.post('/registration', registrationController)
+app.post('/login', loginController)
 
 let port = process.env.PORT || 5000;
 
