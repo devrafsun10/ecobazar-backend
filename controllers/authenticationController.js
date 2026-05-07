@@ -1,9 +1,10 @@
-const { mailVerification } = require('../utils/email');
+const { mailVerification, resetPasswordMailVerification } = require('../utils/email');
 const User = require("../models/userModels")
 const { emptyFeildValidation } = require('../utils/validation');
 const { tokenGenerator } = require('../utils/tokenGenerator');
 const { existingData } = require('../utils/exsistingData');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken')
 
 let registrationController = async (req, res) => {
     const { email, password, confirmPassword, terms } = req.body;
@@ -81,4 +82,65 @@ let loginController = async (req,res) => {
      })
 }
 
-module.exports = { registrationController, loginController }
+let forgotPasswordController = async (req,res) => {
+    let {email} = req.body
+    emptyFeildValidation(res,email)
+
+    let users = await existingData(res,{email:email})
+    if(!users){
+        return res.send({
+            message:"User not found"
+        })
+    }
+
+    let token = tokenGenerator({
+            id: users._id,
+            email: users.email
+        }, process.env.ACCESS_TOKEN_SECRET,"1d")
+
+    resetPasswordMailVerification(token,email)
+
+    res.send({message:"please check your email."})
+}
+
+let resetPasswordController = async (req,res) => {
+    let {newPassword,confirmPassword} = req.body
+    let {token} = req.params
+
+    if(newPassword !== confirmPassword){
+        res.send({
+            message: "Confirm password not matched"
+        })
+    }
+
+     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function(err, decoded) {
+             if(err){
+                 res.send({
+                     message: "Unauthorized"
+                 })
+             } else {
+                 const hash = bcrypt.hashSync(newPassword, 10);
+                 const updateData = User.findByIdAndUpdate({_id: decoded.id},{password: newPassword})
+                 res.send({
+                    message:"Password updated"
+                 })
+             }
+     });
+}
+
+let resendVerificationController = async (req,res) => {
+    let {email} = req.body
+
+    let user = await User.findOne({email:email})
+
+    let token = tokenGenerator({
+            id: user._id,
+            email: user.email
+        }, process.env.ACCESS_TOKEN_SECRET,"1d")
+
+    mailVerification(token,email)   
+
+    res.send({message:"check your email for verification"})
+}
+
+module.exports = { registrationController, loginController, forgotPasswordController,resetPasswordController,resendVerificationController}
