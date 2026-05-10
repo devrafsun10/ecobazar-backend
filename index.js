@@ -4,7 +4,7 @@ require('dotenv').config()
 const express = require('express');
 const cors = require('cors');
 const dbConfig = require('./config/dbConfig');
-const { registrationController, loginController, forgotPasswordController, resetPasswordController, resendVerificationController } = require("./controllers/authenticationController");
+const { registrationController, loginController, forgotPasswordController, resetPasswordController, resendVerificationController, verifyEmailController } = require("./controllers/authenticationController");
 const User = require('./models/userModels');
 const app = express();
 
@@ -21,6 +21,7 @@ app.post('/login', loginController)
 app.post('/forgotpassword', forgotPasswordController)
 app.post('/resetPassword/:token', resetPasswordController)
 app.post('/resendverificationemail', resendVerificationController )
+app.post('/verifyemail/:token', verifyEmailController)
 
 let port = process.env.PORT || 5000;
 

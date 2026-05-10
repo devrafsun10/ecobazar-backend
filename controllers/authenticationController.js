@@ -143,4 +143,24 @@ let resendVerificationController = async (req,res) => {
     res.send({message:"check your email for verification"})
 }
 
-module.exports = { registrationController, loginController, forgotPasswordController,resetPasswordController,resendVerificationController}
+let verifyEmailController = async (req,res) => {
+    const {token} = req.params
+
+    jwt.verify(token,process.env.ACCESS_TOKEN_SECRET, async (err,decoded)=>{
+        if(err){
+            res.send({message:"Unauthorized"})
+        }else{
+            const userId = decoded.id
+            let findUser = await User.findById(userId)
+            if(findUser.isVerified){
+                return res.send({message:"User already verified"})
+            }else{
+                findUser.isVerified = true
+                findUser.save()
+                res.send({message:"Email verified successfully."})
+            }
+        }
+    })
+}
+
+module.exports = { registrationController, loginController, forgotPasswordController,resetPasswordController,resendVerificationController,verifyEmailController}
