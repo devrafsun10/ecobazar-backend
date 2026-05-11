@@ -7,7 +7,8 @@ const dbConfig = require('./config/dbConfig');
 const { registrationController, loginController, forgotPasswordController, resetPasswordController, resendVerificationController, verifyEmailController } = require("./controllers/authenticationController");
 const User = require('./models/userModels');
 const app = express();
-const { rateLimit } = require('express-rate-limit')
+const { rateLimit } = require('express-rate-limit');
+const { getAllUsersController, singleUserDataController, deleteUserController, updateUserController } = require("./controllers/userControllers");
 
 const limiter = rateLimit({
 	windowMs: 15 * 60 * 1000, 
@@ -31,6 +32,16 @@ app.post('/forgotpassword', forgotPasswordController)
 app.post('/resetPassword/:token', resetPasswordController)
 app.post('/resendverificationemail', resendVerificationController )
 app.post('/verifyemail/:token', verifyEmailController)
+
+//product create
+
+//order management
+
+//user mangement
+app.get('/allusers', getAllUsersController)
+app.get('/singleuser/:id',singleUserDataController)
+app.delete('/deleteuser/:id',deleteUserController)
+app.post('/updateuser/:id',updateUserController)
 
 let port = process.env.PORT || 5000;
 
