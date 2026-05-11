@@ -113,14 +113,14 @@ let resetPasswordController = async (req,res) => {
         })
     }
 
-     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function(err, decoded) {
+     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async function(err, decoded) {
              if(err){
                  res.send({
                      message: "Unauthorized"
                  })
              } else {
                  const hash = bcrypt.hashSync(newPassword, 10);
-                 const updateData = User.findByIdAndUpdate({_id: decoded.id},{password: newPassword})
+                 const updateData = await User.findByIdAndUpdate({_id: decoded.id},{password: hash},{new : true})
                  res.send({
                     message:"Password updated"
                  })
