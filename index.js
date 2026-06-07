@@ -34,6 +34,7 @@ app.post('/resendverificationemail', resendVerificationController )
 app.post('/verifyemail/:token', verifyEmailController)
 
 //product create
+app.post('/createproduct',)
 
 //order management
 
