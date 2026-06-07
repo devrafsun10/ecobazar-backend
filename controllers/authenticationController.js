@@ -11,11 +11,15 @@ let registrationController = async (req, res) => {
 
    let users= (await existingData(res,{email:email}))
    if(users){
-    return res.send({message: "User exist"})
+    return res.send({
+        success: false,
+        message: "User exist"
+    })
    }
 
     if (!terms) {
         return res.send({
+            success: false,
             message: "Please accept the terms and conditions."
         })
     }
@@ -26,6 +30,7 @@ let registrationController = async (req, res) => {
 
     if (password !== confirmPassword) {
         return res.send({
+            success: false,
             message: "Password and confirm password do not match."
         })
     }
@@ -49,7 +54,8 @@ let registrationController = async (req, res) => {
     mailVerification(token,email)
 
     return res.send({
-        message: "User registered successfully."
+        success:true,
+        message: "User registered successfully,please check your email for verification."
     })
 }
 
@@ -73,11 +79,13 @@ let loginController = async (req,res) => {
 
      if(!pass) {
         return res.send({
+            success: false,
             message: "Invalid Credential"
         })
      }
 
      res.send({
+        success: true,
         message:"Login Successful"
      })
 }
@@ -89,6 +97,7 @@ let forgotPasswordController = async (req,res) => {
     let users = await existingData(res,{email:email})
     if(!users){
         return res.send({
+            success: false,
             message:"User not found"
         })
     }
@@ -100,7 +109,10 @@ let forgotPasswordController = async (req,res) => {
 
     resetPasswordMailVerification(token,email)
 
-    res.send({message:"please check your email."})
+    res.send({
+        success: true,
+        message:"please check your email."
+    })
 }
 
 let resetPasswordController = async (req,res) => {
@@ -109,6 +121,7 @@ let resetPasswordController = async (req,res) => {
 
     if(newPassword !== confirmPassword){
         res.send({
+            success: false,
             message: "Confirm password not matched"
         })
     }
@@ -122,6 +135,7 @@ let resetPasswordController = async (req,res) => {
                  const hash = bcrypt.hashSync(newPassword, 10);
                  const updateData = await User.findByIdAndUpdate({_id: decoded.id},{password: hash},{new : true})
                  res.send({
+                    success:true,
                     message:"Password updated"
                  })
              }
@@ -140,7 +154,10 @@ let resendVerificationController = async (req,res) => {
 
     mailVerification(token,email)   
 
-    res.send({message:"check your email for verification"})
+    res.send({
+        success: true,
+        message:"check your email for verification"
+    })
 }
 
 let verifyEmailController = async (req,res) => {
@@ -157,7 +174,10 @@ let verifyEmailController = async (req,res) => {
             }else{
                 findUser.isVerified = true
                 findUser.save()
-                res.send({message:"Email verified successfully."})
+                res.send({
+                    success:true,
+                    message:"Email verified successfully."
+                })
             }
         }
     })
