@@ -63,7 +63,18 @@ const productSchema = new Schema( {
         type : String,
         enum : [ "pending", "active", "inactive"],
         default : "pending"
-    }
+    },
+    images : [
+        {
+            url : {
+                type : String,
+                isMain : {
+                    type : Boolean,
+                    default : false
+                }
+            }
+        }
+    ]
 })
 
 module.exports = mongoose.model('Product', productSchema)
