@@ -10,6 +10,8 @@ const app = express();
 const { rateLimit } = require('express-rate-limit');
 const { getAllUsersController, singleUserDataController, deleteUserController, updateUserController } = require("./controllers/userControllers");
 const { createProductController, getProductController, getSingleProductController, productDeleteController, productUpdateController } = require("./controllers/productController");
+const axios = require('axios');
+const multer = require('multer')
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
