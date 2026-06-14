@@ -2,9 +2,9 @@ const Cart = require('../models/cartModel')
 const Product = require('../models/productModel')
 
 const createCart = async (req, res) => {
-    const {id} = req.params
+    const {proid, userid} = req.params
 
-    const existingProduct = await Product.findOne({id})
+    const existingProduct = await Product.findOne({proid})
     if(!existingProduct){
        return res.json({
             success: false,
@@ -14,7 +14,8 @@ const createCart = async (req, res) => {
 
     let cart = new Cart({
         product: id,
-        quantity: 1
+        quantity: 1,
+        userid : userid
     })
     await cart.save()
 
@@ -23,8 +24,6 @@ const createCart = async (req, res) => {
         message: "Product added to cart"
     })
 }
-
-module.exports = { createCart }
 
 const increDecre = async (req,res) => {
     const {id} = req.params
@@ -44,3 +43,5 @@ const increDecre = async (req,res) => {
         message: "Product quantity updated"
     })
 }
+
+module.exports = { createCart, increDecre }
