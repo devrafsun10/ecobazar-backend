@@ -25,3 +25,22 @@ const createCart = async (req, res) => {
 }
 
 module.exports = { createCart }
+
+const increDecre = async (req,res) => {
+    const {id} = req.params
+    const { type} = req.params
+
+    const product = await Product.findOne({id})
+
+    if( type === "plus") {
+        product.quantity = product.quantity + 1
+    }else{
+        product.quantity = product.quantity - 1
+    }
+    await product.save()
+
+    res.json({
+        success: true,
+        message: "Product quantity updated"
+    })
+}
