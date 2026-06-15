@@ -44,4 +44,15 @@ const increDecre = async (req,res) => {
     })
 }
 
-module.exports = { createCart, increDecre }
+const proDelete = async (req,res) => {
+
+    const {id} = req.params
+    await Cart.findByIdAndDelete({id})
+
+    res.json({
+        success: true,
+        message: "Product deleted from cart"
+    })
+}
+
+module.exports = { createCart, increDecre, proDelete }
