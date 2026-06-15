@@ -11,7 +11,8 @@ const { rateLimit } = require('express-rate-limit');
 const { getAllUsersController, singleUserDataController, deleteUserController, updateUserController } = require("./controllers/userControllers");
 const { createProductController, getProductController, getSingleProductController, productDeleteController, productUpdateController } = require("./controllers/productController");
 const axios = require('axios');
-const multer = require('multer')
+const multer = require('multer');
+const { createCart, increDecre, proDelete, getCart } = require("./controllers/cartControllers");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -54,6 +55,12 @@ app.get('/allproduct', getProductController)
 app.get('/singleproduct/:id', getSingleProductController)
 app.get('/deleteproduct/:id', productDeleteController)
 app.put('/updateproduct/:id', productUpdateController)
+
+//Cart management
+app.post("/cart/create", createCart)
+app.post("/cart/update/:id", increDecre)
+app.get("/cart/:userId", getCart)
+app.delete("/cart/:id", proDelete)
 
 //order management
 
