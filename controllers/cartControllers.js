@@ -55,4 +55,21 @@ const proDelete = async (req,res) => {
     })
 }
 
-module.exports = { createCart, increDecre, proDelete }
+const getCart = async (req,res) => {
+    const {userId} = req.params
+
+    const cart = await Cart.find({_id: userId})
+
+    let totalPrice = 0
+
+    cart.map(item => {
+        totalPrice += item.price
+    })
+
+    res.json({
+        cart,
+        totalPrice
+    })
+}
+
+module.exports = { createCart, increDecre, proDelete, getCart }
