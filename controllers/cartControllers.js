@@ -12,12 +12,24 @@ const createCart = async (req, res) => {
         })
     }
 
-    let cart = new Cart({
+    const existingProductOnCart = await Cart.findOne({product: proid, user: userid})
+    if(existingProductOnCart){
+        existingProductOnCart.quantity += 1
+        await existingProductOnCart.save()
+        return res.json({
+            success: true,
+            message: "Product quantity updated"
+        })
+    }else{
+        let cart = new Cart({
         product: proid,
         quantity: 1,
         user: userid
     })
     await cart.save()
+    }
+
+    
 
     res.json({
         success: true,
@@ -33,6 +45,7 @@ const increDecre = async (req,res) => {
 
     if( type === "plus") {
         product.quantity = product.quantity + 1
+
         await product.save()
     }else{
         product.quantity -= 1
