@@ -2,9 +2,9 @@ const Cart = require('../models/cartModel')
 const Product = require('../models/productModel')
 
 const createCart = async (req, res) => {
-    const {proid, userid} = req.params
+    const {proid, userid} = req.body
 
-    const existingProduct = await Product.findOne({proid})
+    const existingProduct = await Product.findOne({_id:proid})
     if(!existingProduct){
        return res.json({
             success: false,
@@ -13,9 +13,9 @@ const createCart = async (req, res) => {
     }
 
     let cart = new Cart({
-        product: id,
+        product: proid,
         quantity: 1,
-        userid : userid
+        user: userid
     })
     await cart.save()
 
@@ -27,16 +27,18 @@ const createCart = async (req, res) => {
 
 const increDecre = async (req,res) => {
     const {id} = req.params
-    const { type} = req.params
+    const { type} = req.body
 
-    const product = await Product.findOne({id})
+    const product = await Cart.findOne({ product : id})
 
     if( type === "plus") {
         product.quantity = product.quantity + 1
+        await product.save()
     }else{
-        product.quantity = product.quantity - 1
+        product.quantity -= 1
+        await product.save()
     }
-    await product.save()
+    console.log("type: ", type)
 
     res.json({
         success: true,
@@ -47,7 +49,7 @@ const increDecre = async (req,res) => {
 const proDelete = async (req,res) => {
 
     const {id} = req.params
-    await Cart.findByIdAndDelete({id})
+    await Cart.findByIdAndDelete({ _id: id })
 
     res.json({
         success: true,
@@ -58,7 +60,7 @@ const proDelete = async (req,res) => {
 const getCart = async (req,res) => {
     const {userId} = req.params
 
-    const cart = await Cart.find({_id: userId})
+    const cart = await Cart.find({user : userId}).populate("product")
 
     let totalPrice = 0
 
