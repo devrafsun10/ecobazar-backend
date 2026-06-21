@@ -15,6 +15,7 @@ const createCart = async (req, res) => {
     const existingProductOnCart = await Cart.findOne({product: proid, user: userid})
     if(existingProductOnCart){
         existingProductOnCart.quantity += 1
+        existingProductOnCart.totalPrice = existingProductOnCart.totalPrice + existingProduct.price
         await existingProductOnCart.save()
         return res.json({
             success: true,
@@ -24,6 +25,7 @@ const createCart = async (req, res) => {
         let cart = new Cart({
         product: proid,
         quantity: 1,
+        totalPrice: existingProduct.price,
         user: userid
     })
     await cart.save()
@@ -41,15 +43,18 @@ const increDecre = async (req,res) => {
     const {id} = req.params
     const { type} = req.body
 
-    const product = await Cart.findOne({ product : id})
+    const cart = await Cart.findOne({ product : id})
+    const product = await Product.findOne({ _id: id })
 
     if( type === "plus") {
-        product.quantity = product.quantity + 1
+        cart.quantity += 1
+        cart.totalPrice = cart.totalPrice + product.price
 
-        await product.save()
+        await cart.save()
     }else{
-        product.quantity -= 1
-        await product.save()
+        cart.quantity -= 1
+        cart.totalPrice = cart.totalPrice - product.price
+        await cart.save()
     }
     console.log("type: ", type)
 
@@ -78,7 +83,9 @@ const getCart = async (req,res) => {
     let totalPrice = 0
 
     cart.map(item => {
-        totalPrice += item.price
+        console.log(item.product.price);
+        
+        totalPrice += item.product.price
     })
 
     res.json({
