@@ -85,7 +85,7 @@ const getCart = async (req,res) => {
     cart.map(item => {
         console.log(item.product.price);
         
-        totalPrice += item.product.price
+        totalPrice += item.totalPrice
     })
 
     res.json({

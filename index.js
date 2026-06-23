@@ -13,6 +13,7 @@ const { createProductController, getProductController, getSingleProductControlle
 const axios = require('axios');
 const multer = require('multer');
 const { createCart, increDecre, proDelete, getCart } = require("./controllers/cartControllers");
+const { paymentControllers } = require("./controllers/paymentControllers");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -63,6 +64,7 @@ app.get("/cart/:userId", getCart)
 app.delete("/cart/:id", proDelete)
 
 //order management
+app.post("/payment", paymentControllers)
 
 //user mangement
 app.get('/allusers', getAllUsersController)
