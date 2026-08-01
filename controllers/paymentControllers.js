@@ -85,4 +85,22 @@ const paymentControllers = async (req, res) => {
     }
 };
 
-module.exports = { paymentControllers }
+const getAllOrdersController = async (req,res) => {
+    const {userid} = req.params
+
+    let data = await Order.find({user: userid})
+
+    if (!data.length) {
+        return res.json({
+            success: false,
+            message: 'Order Not Found'
+        })
+    }
+
+    res.send({
+        success: true,
+        data
+    })
+}
+
+module.exports = { paymentControllers, getAllOrdersController }
