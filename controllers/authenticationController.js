@@ -87,7 +87,16 @@ let loginController = async (req,res) => {
 
      res.send({
         success: true,
-        message:"Login Successful"
+        message:"Login Successful",
+    user: {
+        id: users._id,
+        fullName: users.fullName,
+        email: users.email,
+        role: users.role,
+        profile: users.profile,
+        phoneNumber: users.phoneNumber,
+        isVerified: users.isVerified
+    }
      })
 }
 
