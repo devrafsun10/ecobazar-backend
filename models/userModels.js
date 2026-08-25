@@ -57,7 +57,10 @@ const userSchema = new Schema({
     },
     country: {
         type: String,
-    }  
+    } ,
+    city: {
+        type : String
+    } 
     }
 })
 
